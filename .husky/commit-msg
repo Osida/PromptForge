@@ -1,0 +1,10 @@
+#!/usr/bin/env sh
+. "$(dirname "$0")/_/husky.sh"
+
+commit_regex='^(feature|bugfix|refactor|style|documentation|performance|testing|chore|revert-changes|init|assets|code-removal|wip|config|security): .+'
+error_msg="Your commit message must match the format: '<subject>: <message>' where <subject> is one of [feature, bugfix, refactor, style, documentation, performance, testing, chore, revert-changes, init, assets, code-removal, work-in-progress, config, security]"
+
+if ! grep -Eq "$commit_regex" "$1"; then
+  echo "$error_msg" >&2
+  exit 1
+fi

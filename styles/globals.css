@@ -1,0 +1,90 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer components {
+    /* Utilities */
+    .container {
+        @apply mx-auto px-6 max-w-7xl md:px-12;
+    }
+
+    .flex-center {
+        @apply flex items-center justify-center;
+    }
+
+    .flex-column {
+        @apply flex flex-col;
+    }
+
+    .flex-column--center {
+        @apply flex-column items-center justify-center;
+    }
+
+    .input--default {
+        @apply input input-bordered w-full placeholder-gray-400 text-white;
+    }
+
+    /* Elements */
+    .component-title {
+        @apply text-5xl font-bold sm:text-6xl;
+    }
+
+    .component-description {
+        @apply text-lg sm:text-xl;
+    }
+
+    .nav-button {
+        @apply flex items-center justify-center btn btn-sm normal-case font-medium rounded-full;
+    }
+
+    /* Gradients */
+    .gradient-violet-pink {
+        @apply from-violet-500 to-pink-500;
+    }
+
+    .gradient-violet-lime {
+        @apply from-violet-500 to-lime-500;
+    }
+
+    .gradient-pink-lime {
+        @apply from-pink-500 to-lime-500;
+    }
+
+    .gradient-violet-pink-lime {
+        @apply from-violet-500 via-pink-500 to-lime-500;
+    }
+
+    /* Gradients: Text color */
+    .text-gradient-violet-pink {
+        @apply text-transparent bg-clip-text gradient-violet-pink;
+    }
+
+    .text-gradient-violet-lime {
+        @apply text-transparent bg-clip-text gradient-violet-lime;
+    }
+
+    .text-gradient-pink-lime {
+        @apply text-transparent bg-clip-text gradient-pink-lime;
+    }
+
+    .text-gradient-violet-pink-lime {
+        @apply text-transparent bg-clip-text gradient-violet-pink-lime;
+    }
+
+    /* Gradients: Background color */
+    .bg-gradient-violet-pink {
+        @apply bg-gradient-to-br gradient-violet-pink;
+    }
+
+    .bg-gradient-violet-lime {
+        @apply bg-gradient-to-br gradient-violet-lime
+    }
+
+    .bg-gradient-pink-lime {
+        @apply bg-gradient-to-br gradient-pink-lime;
+    }
+
+    .bg-gradient-violet-pink-lime {
+        @apply bg-gradient-to-br gradient-violet-pink-lime;
+    }
+}
