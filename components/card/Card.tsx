@@ -14,41 +14,20 @@ interface CardProps {
     prompt: string;
     hashtags: string;
     canEditCard: boolean;
+    handleEdit?: () => void;
+    handleDelete?: () => void;
 }
 
-const Card = ({promptId, prompt, hashtags, creator, canEditCard}: CardProps) => {
+const Card = ({promptId, prompt, hashtags, creator, canEditCard, handleEdit, handleDelete}: CardProps) => {
     const [showDeleteToast, setShowDeleteToast] = useState(false);
     const [tags, setTags] = useState<string[]>([]);
     const router = useRouter();
     const hasBeenCopied = false;
 
-    const handleEdit = () => {
-        router.push(`/update-prompt?id=${promptId}`);
-    };
-
-
-    const handleDelete = async () => {
-        const hasConfirmed = confirm("Are you sure you want to delete this prompt?");
-        if (hasConfirmed) {
-            try {
-                const {data} = await axios.delete<PromptSchema>(endpoints.promptDetails(promptId));
-                setShowDeleteToast(true);
-                setTimeout(() => router.push("/profile"), 3000);
-            } catch (err) {
-                throw new Error(`Error deleting prompt: ${err}`);
-            }
-        }
-    };
-
     useEffect(() => {
         setTags(convertHashtags(hashtags));
     }, [hashtags]);
 
-    // useEffect(() => {
-    //     setTimeout(() => setShowDeleteToast(false), 50000);
-    // }, []);
-
-    console.log("window ", window);
     return (
         <article className="card w-full h-fit bg-neutral shadow-xl flex-1 break-inside-avoid-column">
             <div className="card-body space-y-4">

@@ -3,15 +3,17 @@ import React from "react";
 import axios from "axios";
 import dynamic from "next/dynamic";
 import {PromptSchema} from "@/types";
-import {CardSkeleton} from "@/components";
+import {CardSkeleton, Description} from "@/components";
 import {useQuery} from "@tanstack/react-query";
 import {endpoints, homeData} from "@/constants";
 import {useForm, useWatch} from "react-hook-form";
 import useSearchFilter from "@/hooks/useSearchFilter";
+import {useSession} from "next-auth/react";
 
 const Card = dynamic(() => import("@/components/card/Card"), {loading: () => <CardSkeleton/>});
 
 const HomeFeed = () => {
+    const {data: session, status} = useSession();
     const getAllPrompts = async () => {
         const {data, status} = await axios.get<PromptSchema[]>(endpoints.getAllPrompts);
         if (status !== 200) throw new Error("Error fetching prompts");
@@ -38,8 +40,16 @@ const HomeFeed = () => {
                     </article>
                 </>
             );
+        if (filteredData?.length === 0) return (<Description>{`${session?.user?.name} has no prompts`}</Description>);
         return filteredData?.map(({creator, hashtags, prompt, _id}, index) => (
-            <Card key={_id} creator={creator} promptId={_id} prompt={prompt} hashtags={hashtags} canEditCard={false}/>
+            <Card
+                key={_id}
+                creator={creator}
+                promptId={_id}
+                prompt={prompt}
+                hashtags={hashtags}
+                canEditCard={false}
+            />
         ));
     };
 

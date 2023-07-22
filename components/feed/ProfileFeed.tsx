@@ -3,13 +3,14 @@ import React, {useEffect, useState} from "react";
 import axios from "axios";
 import dynamic from "next/dynamic";
 import {PromptSchema} from "@/types";
-import {CardSkeleton} from "@/components";
+import {CardSkeleton, Description} from "@/components";
 import {useQuery} from "@tanstack/react-query";
 import {endpoints, homeData} from "@/constants";
 import {useForm, useWatch} from "react-hook-form";
 import useSearchFilter from "@/hooks/useSearchFilter";
 import {useSession} from "next-auth/react";
 import {ExtendedSession} from "@/lib/nextauth/authOptions";
+import {useRouter} from "next/navigation";
 
 const Card = dynamic(() => import("@/components/card/Card"), {loading: () => <CardSkeleton/>});
 
@@ -36,6 +37,25 @@ const ProfileFeed = () => {
 
     const filteredData = useSearchFilter(data, searchValue);
 
+    const router = useRouter();
+
+    const handleEdit = (promptId: string) => {
+        router.push(`/update-prompt?id=${promptId}`);
+    };
+
+
+    const handleDelete = async (promptId: string) => {
+        const hasConfirmed = confirm("Are you sure you want to delete this prompt?");
+        if (hasConfirmed) {
+            try {
+                const {data} = await axios.delete<PromptSchema>(endpoints.promptDetails(promptId));
+                console.log("data: ", data);
+            } catch (err) {
+                throw new Error(`Error deleting prompt: ${err}`);
+            }
+        }
+    };
+
     const renderFeedContent = () => {
         if (isLoading) return <LoadingCard/>;
         if (isError && status !== "loading")
@@ -49,8 +69,18 @@ const ProfileFeed = () => {
                     </article>
                 </>
             );
+        if (filteredData?.length === 0) return (<Description>{`${session?.user?.name} has no prompts`}</Description>);
         return filteredData?.map(({creator, hashtags, prompt, _id}, index) => (
-            <Card key={_id} creator={creator} promptId={_id} prompt={prompt} hashtags={hashtags} canEditCard={true}/>
+            <Card
+                key={_id}
+                creator={creator}
+                promptId={_id}
+                prompt={prompt}
+                hashtags={hashtags}
+                canEditCard={true}
+                handleEdit={() => handleEdit(_id)}
+                handleDelete={() => handleDelete(_id)}
+            />
         ));
     };
 
