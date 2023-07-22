@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React, {useEffect, useState} from "react";
 import axios from "axios";
 import dynamic from "next/dynamic";
 import {PromptSchema} from "@/types";
@@ -8,12 +8,18 @@ import {useQuery} from "@tanstack/react-query";
 import {endpoints, homeData} from "@/constants";
 import {useForm, useWatch} from "react-hook-form";
 import useSearchFilter from "@/hooks/useSearchFilter";
+import {useSession} from "next-auth/react";
+import {ExtendedSession} from "@/lib/nextauth/authOptions";
 
 const Card = dynamic(() => import("@/components/card/Card"), {loading: () => <CardSkeleton/>});
 
-const HomeFeed = () => {
-    const getAllPrompts = async () => {
-        const {data, status} = await axios.get<PromptSchema[]>(endpoints.getAllPrompts);
+const ProfileFeed = () => {
+    const {data: session, status} = useSession();
+    const id = (session as ExtendedSession)?.user_id;
+    const [filter_data, setFilter_data] = useState(null);
+
+    const getUserPrompts = async () => {
+        const {data, status} = await axios.get<PromptSchema[]>(endpoints.getUserPrompts(id));
         if (status !== 200) throw new Error("Error fetching prompts");
         return data;
     };
@@ -22,24 +28,29 @@ const HomeFeed = () => {
 
     const searchValue = useWatch({control, name: "search"});
 
-    const {isLoading, isError, data, error} = useQuery<PromptSchema[]>({queryKey: ["prompts"], queryFn: getAllPrompts});
+    const {isLoading, isError, data, error} = useQuery<PromptSchema[]>({
+        queryKey: ["userPrompts"],
+        queryFn: getUserPrompts,
+        enabled: !!id,
+    });
 
     const filteredData = useSearchFilter(data, searchValue);
 
     const renderFeedContent = () => {
         if (isLoading) return <LoadingCard/>;
-        if (isError)
+        if (isError && status !== "loading")
             return (
                 <>
                     <article className="toast toast-start">
                         <div className="alert alert-error">
-                            <p>Error getting prompts.</p>
+                            {/*@ts-ignore*/}
+                            <p>{`Error getting user prompts. ${error?.message}`}</p>
                         </div>
                     </article>
                 </>
             );
         return filteredData?.map(({creator, hashtags, prompt, _id}, index) => (
-            <Card key={_id} creator={creator} promptId={_id} prompt={prompt} hashtags={hashtags} canEditCard={false}/>
+            <Card key={_id} creator={creator} promptId={_id} prompt={prompt} hashtags={hashtags} canEditCard={true}/>
         ));
     };
 
@@ -73,4 +84,4 @@ const LoadingCard = () => {
     );
 };
 
-export default HomeFeed;
+export default ProfileFeed;

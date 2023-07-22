@@ -6,6 +6,13 @@ export const linksData = {
     updatePromptHref: "/update-prompt",
 };
 
+export const endpoints = {
+    getAllPrompts: "/api/prompt",
+    getUserPrompts: (id: string) => `/api/users/${id}/prompts`,
+    postPrompt: "/api/prompt/new",
+    promptDetails: (id: string) => `/api/prompt/${id}`,
+};
+
 export const navData = {
     logoName: "PromptForge",
     createPromptButton: "Create Prompt",

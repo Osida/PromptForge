@@ -2,14 +2,14 @@ import {connectToDBWithMongoose} from "@/lib/mongodb/db";
 import {Prompt} from "@/lib/mongodb/models";
 import mongoose from "mongoose";
 
-interface IRequestBody {
+interface RequestBodySchema {
     userId: string;
     prompt: string;
     hashtags: string;
 }
 
 export const POST = async (req: Request) => {
-    const {userId, prompt, hashtags} = await req.json() as IRequestBody;
+    const {userId, prompt, hashtags} = await req.json() as RequestBodySchema;
 
     const connection = await connectToDBWithMongoose();
 

@@ -4,33 +4,51 @@ import {FiCopy} from "react-icons/fi";
 import {BsCheckCircle} from "react-icons/bs";
 import {useRouter} from "next/navigation";
 import {convertHashtags} from "@/utils";
+import {PromptSchema, UserSchema} from "@/types";
+import axios from "axios";
+import {endpoints} from "@/constants";
 
-interface ICard {
-    creatorId: string;
-    name: string;
-    email: string;
-    image: string;
+interface CardProps {
+    creator: UserSchema;
+    promptId: string;
     prompt: string;
     hashtags: string;
-    promptId: string;
     canEditCard: boolean;
 }
 
-const Card = (props: ICard) => {
-    const [hashtags, setHashtags] = useState<string[]>([]);
+const Card = ({promptId, prompt, hashtags, creator, canEditCard}: CardProps) => {
+    const [showDeleteToast, setShowDeleteToast] = useState(false);
+    const [tags, setTags] = useState<string[]>([]);
     const router = useRouter();
     const hasBeenCopied = false;
 
     const handleEdit = () => {
-        router.push(`/update-prompt?id=${props.promptId}`);
+        router.push(`/update-prompt?id=${promptId}`);
+    };
+
+
+    const handleDelete = async () => {
+        const hasConfirmed = confirm("Are you sure you want to delete this prompt?");
+        if (hasConfirmed) {
+            try {
+                const {data} = await axios.delete<PromptSchema>(endpoints.promptDetails(promptId));
+                setShowDeleteToast(true);
+                setTimeout(() => router.push("/profile"), 3000);
+            } catch (err) {
+                throw new Error(`Error deleting prompt: ${err}`);
+            }
+        }
     };
 
     useEffect(() => {
-        const hashtagsArray = convertHashtags(props.hashtags);
-        setHashtags(hashtagsArray);
-    }, [props.hashtags]);
+        setTags(convertHashtags(hashtags));
+    }, [hashtags]);
 
+    // useEffect(() => {
+    //     setTimeout(() => setShowDeleteToast(false), 50000);
+    // }, []);
 
+    console.log("window ", window);
     return (
         <article className="card w-full h-fit bg-neutral shadow-xl flex-1 break-inside-avoid-column">
             <div className="card-body space-y-4">
@@ -38,16 +56,16 @@ const Card = (props: ICard) => {
                 <div className={"flex items-center"}>
                     <div className="avatar">
                         <div className="w-10 rounded-full">
-                            <img src={props.image} alt={"Profile Image"}/>
+                            <img src={creator.image} alt={"Profile Image"}/>
                         </div>
                     </div>
 
                     <span className={"ml-3 flex-1"}>
                         <h6 className="text-sm font-medium">
-                            {props.name}
+                            {creator.name}
                         </h6>
                         <p className={"text-sm font-light"}>
-                           {props.email}
+                           {creator.email}
                         </p>
                     </span>
 
@@ -60,33 +78,37 @@ const Card = (props: ICard) => {
                 </div>
 
                 {/* Card Body: prompt */}
-                <p>
-                    {props.prompt}
-                </p>
+                <p>{prompt}</p>
 
                 {/* Card Footer: hashtags */}
                 <div className="card-actions">
-                    {hashtags.map((tag, index) => (
+                    {tags.map((tag, index) => (
                         <>
-                            <div key={`${tag}-${index}`}
-                                 className={"btn btn-xs normal-case badge text-xs shadow-md"}>
-                                <p className={""}>
-                                    {tag}
-                                </p>
+                            <div key={`${tag}-${index}`} className={"btn btn-xs normal-case badge text-xs shadow-md"}>
+                                <p>{tag}</p>
                             </div>
                         </>
                     ))}
                 </div>
-                {props.canEditCard && <div className="card-actions pt-2 justify-center">
-                    <button onClick={handleEdit}
-                            className="btn btn-sm btn-ghost text-xs font-medium bg-gradient-pink-lime text-white">
-                        Edit
-                    </button>
-                    <button className="btn btn-sm text-xs font-medium text-white">
-                        Delete
-                    </button>
-                </div>}
+                {canEditCard && (
+                    <div className="card-actions pt-2 justify-center">
+                        <button onClick={handleEdit}
+                                className="btn btn-sm btn-ghost text-xs font-medium bg-gradient-pink-lime text-white">
+                            Edit
+                        </button>
+                        <button onClick={handleDelete} className="btn btn-sm text-xs font-medium text-white">
+                            Delete
+                        </button>
+                    </div>
+                )}
             </div>
+            {showDeleteToast && (
+                <div className="toast toast-start">
+                    <div className="alert alert-success">
+                        <span>Prompt removed</span>
+                    </div>
+                </div>
+            )}
         </article>
     );
 };

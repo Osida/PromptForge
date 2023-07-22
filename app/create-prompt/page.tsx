@@ -1,12 +1,9 @@
 import React from "react";
-import {PromptForm} from "@/components";
+import {Description, Title} from "@/components";
 import {getServerSession} from "next-auth/next";
 import {nextAuthOptions} from "@/lib/nextauth/authOptions";
 import {AuthRequiredError} from "@/utils/exceptions";
-
-const getSessionData = async () => {
-    return await getServerSession(nextAuthOptions);
-};
+import CreateForm from "@/components/form/CreateForm";
 
 const createPromptData = {
     title: "Script Your AI Assistant",
@@ -14,19 +11,15 @@ const createPromptData = {
 };
 
 const CreatePrompt = async () => {
-    const session = await getSessionData();
+    const session = await getServerSession(nextAuthOptions);
 
     if (!session) throw new AuthRequiredError();
 
     return (
         <main className={"container w-full mt-16"}>
-            <PromptForm
-                title={createPromptData.title}
-                subtitle={createPromptData.subtitle}
-                btnOneText={"Cancel"}
-                btnTwoText={"Create"}
-                handleSubmitMethod={"POST"}
-            />
+            <Title styles={"mb-6 mt-20 bg-gradient-to-r text-gradient-pink-lime"}>{createPromptData.title}</Title>
+            <Description styles={"max-w-4xl"}>{createPromptData.subtitle}</Description>
+            <CreateForm/>
         </main>
     );
 };

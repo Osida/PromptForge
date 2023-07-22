@@ -1,9 +1,9 @@
 "use client";
 import React, {useEffect, useState} from "react";
-import {TypePrompts} from "@/app/page";
+import {PromptSchema} from "@/types";
 
-const useSearchFilter = (data: TypePrompts | undefined, searchValue: string = "") => {
-    const [filteredData, setFilteredData] = useState<TypePrompts | undefined>(data);
+const useSearchFilter = (data: PromptSchema[] | undefined, searchValue: string = "") => {
+    const [filteredData, setFilteredData] = useState<PromptSchema[] | undefined>(data);
 
     useEffect(() => {
         setFilteredData(data);

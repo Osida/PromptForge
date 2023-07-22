@@ -3,7 +3,6 @@ import React from "react";
 import axios from "axios";
 import {useForm} from "react-hook-form";
 import ErrorText from "../text/ErrorText";
-import {Description, Title} from "@/components";
 import {useMutation} from "@tanstack/react-query";
 import {useSession} from "next-auth/react";
 import {ExtendedSession} from "@/lib/nextauth/authOptions";
@@ -26,8 +25,6 @@ interface IFormData {
 }
 
 const PromptForm = ({
-                        title,
-                        subtitle,
                         btnOneText,
                         btnTwoText,
                         handleSubmitMethod,
@@ -84,11 +81,6 @@ const PromptForm = ({
 
         return (
             <section>
-                <Title text={title} styles={"mb-6 mt-20 bg-gradient-to-r text-gradient-pink-lime"}/>
-                <Description styles={"max-w-4xl"}>
-                    {subtitle}
-                </Description>
-
                 <form onSubmit={handleSubmit(onSubmit)} className={"space-y-4 mt-16 max-w-4xl"}>
                     <div className={"form-control"}>
                         <label className={"label"}>

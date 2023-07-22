@@ -2,14 +2,14 @@ import React from "react";
 import {fonts} from "@/public";
 
 interface ITitle {
-    text: string;
     styles?: string;
+    children: React.ReactNode;
 }
 
-const Title = ({text, styles}: ITitle) => {
+const Title = ({styles, children}: ITitle) => {
     return (
         <h1 className={`component-title ${fonts.roboto.className} ${styles}`}>
-            {text}
+            {children}
         </h1>
     );
 };
