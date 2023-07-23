@@ -3,8 +3,8 @@
 Hey there! 👋 I'm [Osida Richards](https://www.linkedin.com/in/osida-richards), a skilled full-stack developer and the creator of PromptForge. Feel free to connect with me on [LinkedIn](https://www.linkedin.com/in/osida-richards-780524243/), check out my [portfolio](https://osida-richards-portfolio.vercel.app/) to see my other projects, or explore the code on [GitHub](https://github.com/Osida/PromptForge).
 
 ## Preview 👀
-[<img src="public/images/mobile-home.webp" width="150"/>](public/images/mobile-home.webp)
-[<img src="public/images/desktop-home.webp" width="400"/>](public/images/desktop-home.webp)
+https://github.com/Osida/PromptForge/assets/51928654/4a452304-7ec9-43dd-8a92-deca48c4dd41
+
 
 ## Features 🌌
 
